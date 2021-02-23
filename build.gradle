@@ -1,0 +1,78 @@
+plugins {
+    id "org.beryx.jlink" version "2.23.3"
+    id "org.javamodularity.moduleplugin" version "1.6.0"
+}
+
+group 'com.cga'
+version '1.0-SNAPSHOT'
+
+dependencies {
+    implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
+    implementation group: 'org.apache.commons', name: 'commons-math3', version: '3.6.1'
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 15
+targetCompatibility = 15
+
+mainClassName = 'com.cga.outlier/com.cga.outlier.main.Main'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': "OutlierDetector",
+                'Main-Class': 'com.cga.outlie.main.Main'
+    }
+}
+
+run {
+    jvmArgs('--enable-preview')
+}
+
+test {
+    jvmArgs '--enable-preview'
+    moduleOptions {
+        runOnClasspath = true
+    }
+    useJUnitPlatform {
+        includeEngines "junit-jupiter"
+        excludeEngines "junit-vintage"
+    }
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+compileJava {
+    options.compilerArgs << '--enable-preview'
+}
+
+compileTestJava {
+    options.compilerArgs << '--enable-preview'
+}
+
+jlink {
+    mergedModule {
+        requires 'java.naming'
+        requires 'java.xml'
+    }
+    launcher {
+        name = 'outlierdetector'
+        jvmArgs = ['-Dlogback.configurationFile=./logback.xml', '--enable-preview']
+    }
+}
+
+tasks.jlink.doLast {
+    copy {
+        from('src/main/resources')
+        into("$buildDir/image/bin")
+    }
+}
