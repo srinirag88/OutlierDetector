@@ -1,5 +1,7 @@
+import java.util.concurrent.atomic.AtomicReference
 plugins {
     id "org.beryx.jlink" version "2.23.3"
+    id 'nu.studer.jooq' version '5.2'
     id "org.javamodularity.moduleplugin" version "1.6.0"
 }
 
@@ -12,13 +14,17 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'ch.qos.logback:logback-classic:1.2.3'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation group: 'org.jooq', name: 'jooq', version: '3.14.8'
+    implementation group: 'com.zaxxer', name: 'HikariCP', version: '4.0.3'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.1'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.3.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
+    jooqGenerator 'org.postgresql:postgresql:42.2.14'
 }
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 sourceCompatibility = 15
@@ -74,5 +80,45 @@ tasks.jlink.doLast {
     copy {
         from('src/main/resources')
         into("$buildDir/image/bin")
+    }
+}
+
+jooq {
+    configurations {
+        main {
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.INFO
+                jdbc {
+                    driver = 'org.postgresql.Driver'
+                    url = 'jdbc:postgresql://localhost:5432/test?search_path=schema1'
+                    user = 'srini'
+                    password = 'password'
+                    properties {
+                        property {
+                            key = 'ssl'
+                            value = 'false'
+                        }
+                    }
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'schema1'
+                    }
+                    generate {
+                        deprecated = true
+                        records = true
+                        immutablePojos = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'com.cga.outlier.db'
+                        directory = 'build/generated-src/jooq/main'  // default (can be omitted)
+                    }
+                    strategy.name = 'org.jooq.codegen.DefaultGeneratorStrategy'
+                }
+            }
+        }
     }
 }

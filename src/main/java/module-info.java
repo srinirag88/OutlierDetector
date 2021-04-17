@@ -1,6 +1,9 @@
 module com.cga.outlier {
     requires commons.cli;
     requires commons.math3;
+    requires java.sql;
+    requires org.jooq;
+    requires com.zaxxer.hikari;
     exports com.cga.outlier.main;
     uses com.cga.outlier.input.InputReader;
     uses com.cga.outlier.algorithm.OutlierAlgorithm;

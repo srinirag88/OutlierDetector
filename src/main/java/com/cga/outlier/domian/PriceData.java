@@ -15,6 +15,7 @@ public record PriceData(LocalDate date, BigDecimal price) {
         }
     }
 
+
     @Override
     public String toString() {
         return date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + "," + price.setScale(7, RoundingMode.HALF_DOWN);
