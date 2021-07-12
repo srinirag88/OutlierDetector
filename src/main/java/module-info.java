@@ -1,16 +1,16 @@
-module com.cga.outlier {
+module com.srini.outlier {
     requires commons.cli;
     requires commons.math3;
     requires java.sql;
     requires org.jooq;
     requires com.zaxxer.hikari;
-    exports com.cga.outlier.main;
-    uses com.cga.outlier.input.InputReader;
-    uses com.cga.outlier.algorithm.OutlierAlgorithm;
-    uses com.cga.outlier.output.OutputWriter;
-    uses com.cga.outlier.services.OutlierDetectorService;
-    provides com.cga.outlier.input.InputReader with com.cga.outlier.input.impl.CSVReader;
-    provides com.cga.outlier.output.OutputWriter with com.cga.outlier.output.impl.CSVWriter;
-    provides com.cga.outlier.algorithm.OutlierAlgorithm with com.cga.outlier.algorithm.impl.ChauvenetsCriterion;
-    provides com.cga.outlier.services.OutlierDetectorService with com.cga.outlier.services.impl.OutlierDetectorServiceImpl;
+    exports com.srini.outlier.main;
+    uses com.srini.outlier.input.InputReader;
+    uses com.srini.outlier.algorithm.OutlierAlgorithm;
+    uses com.srini.outlier.output.OutputWriter;
+    uses com.srini.outlier.services.OutlierDetectorService;
+    provides com.srini.outlier.input.InputReader with com.srini.outlier.input.impl.CSVReader;
+    provides com.srini.outlier.output.OutputWriter with com.srini.outlier.output.impl.CSVWriter;
+    provides com.srini.outlier.algorithm.OutlierAlgorithm with com.srini.outlier.algorithm.impl.ChauvenetsCriterion;
+    provides com.srini.outlier.services.OutlierDetectorService with com.srini.outlier.services.impl.OutlierDetectorServiceImpl;
 }
